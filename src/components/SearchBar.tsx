@@ -1,61 +1,73 @@
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import useSearchStore from "../store/searchStore";
 
 export default function SearchBar() {
-    const [shouldShowSearch, setShouldShowSearch] = useState(false);
+  const [shouldShowSearch, setShouldShowSearch] = useState(false);
+  const navigate = useNavigate();
+  const searchParams = useSearch({
+    strict: false,
+    select: (search) => (search as { q?: string })?.q || "",
+  });
 
-    const performSearch = useSearchStore(state => state.performSearch);
+  const performSearch = useSearchStore((state) => state.performSearch);
 
-    const handleBlur = () => {
-        setShouldShowSearch(false);
+  const handleBlur = () => {
+    setShouldShowSearch(false);
+  };
+  const handleSearchClick = () => {
+    setShouldShowSearch(true);
+  };
+
+  const searchQuery = (query: string) => {
+    performSearch(query);
+    if (query.trim() === "") {
+      navigate({
+        to: "/",
+        replace: false,
+      });
+    } else {
+      navigate({
+        to: "/search",
+        search: { q: query },
+        replace: false,
+      });
     }
-    const handleSearchClick = () => {
-        setShouldShowSearch(true);
-    };
+  };
 
+  const handleSearchQueryChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const query = event.target.value;
+    searchQuery(query);
+  };
 
-    const searchQuery = (query: string) => {
-        performSearch(query)
-    };
-
-
-    const handleSearchQueryChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const query = event.target.value;
-
-        searchQuery(query);
-
-    };
-
-    return (
-        <div className="flex items-center">
-            {shouldShowSearch ? (
-                <div className="flex items-center bg-black/80 border border-white/20 rounded-sm px-3 py-2 min-w-[280px] backdrop-blur-sm">
-                    <Search
-                        size={20}
-                        className="text-white/70 mr-3 flex-shrink-0"
-                    />
-                    <input
-                        className="bg-transparent text-white placeholder:text-white/60 text-sm focus:outline-none flex-1 font-normal"
-                        type="text"
-                        placeholder="Titles, people, genres"
-                        aria-label="Search"
-                        onChange={handleSearchQueryChange}
-                        onBlur={handleBlur}
-                        autoFocus
-                    />
-                </div>
-            ) : (
-                <button
-                    onClick={handleSearchClick}
-                    className="p-2 hover:bg-white/10 rounded-sm transition-colors duration-200"
-                    aria-label="Search"
-                >
-                    <Search size={24} className="text-white" />
-                </button>
-            )}
-        </div>
-    );
+  return (
+    <div className="flex items-center">
+      {shouldShowSearch ? (
+        <search className="flex items-center bg-black/80 border border-white/20 rounded-sm px-3 py-2 min-w-[280px] backdrop-blur-sm">
+          <Search size={20} className="text-white/70 mr-3 shrink-0" />
+          <input
+            className="bg-transparent text-white placeholder:text-white/60 text-sm focus:outline-none flex-1 font-normal"
+            type="text"
+            placeholder="Titles, people, genres"
+            aria-label="Search"
+            onChange={handleSearchQueryChange}
+            onBlur={handleBlur}
+            defaultValue={searchParams}
+            autoFocus
+          />
+        </search>
+      ) : (
+        <button
+          onClick={handleSearchClick}
+          className="p-2 hover:bg-white/10 rounded-sm transition-colors duration-200"
+          aria-label="Search"
+        >
+          <Search size={24} className="text-white" />
+        </button>
+      )}
+    </div>
+  );
 }
