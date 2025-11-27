@@ -3,7 +3,7 @@ import useSearchStore from "@/store/searchStore";
 import { useState } from "react";
 import performSearch from "./performSearch";
 
-export function useSearch() {
+export function useSearchMovies() {
   const [shouldShowSearch, setShouldShowSearch] = useState(false);
 
   const baseMovies = useBaseMovieStore((state) => state.baseMovies);

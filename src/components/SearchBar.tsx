@@ -1,9 +1,9 @@
-import { useSearch } from "@/lib/useSearch";
+import { useSearchMovies } from "@/lib/useSearchMovies";
 import { Search } from "lucide-react";
 
 export default function SearchBar() {
   const { shouldShowSearch, setShouldShowSearch, handleSearchQueryChange } =
-    useSearch();
+    useSearchMovies();
 
   const handleBlur = () => {
     setShouldShowSearch(false);
