@@ -2,8 +2,12 @@ import { useSearchMovies } from "@/lib/useSearchMovies";
 import { Search } from "lucide-react";
 
 export default function SearchBar() {
-  const { shouldShowSearch, setShouldShowSearch, handleSearchQueryChange } =
-    useSearchMovies();
+  const {
+    shouldShowSearch,
+    setShouldShowSearch,
+    handleSearchQueryChange,
+    searchParams,
+  } = useSearchMovies();
 
   const handleBlur = () => {
     setShouldShowSearch(false);
@@ -24,6 +28,7 @@ export default function SearchBar() {
             aria-label="Search"
             onChange={handleSearchQueryChange}
             onBlur={handleBlur}
+            defaultValue={searchParams}
             autoFocus
           />
         </div>
